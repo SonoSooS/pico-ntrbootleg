@@ -9,6 +9,7 @@ After lots of optimization effort to push the RP2040's unique features to their 
 ## Credits
 
 - profi200 for giving helpful tips and optimization ideas
+- aspargas2 for [minfirm](https://github.com/aspargas2/minfirm)
 - gbatek for the enPng/KEY2 crypto
 
 ## Usage
