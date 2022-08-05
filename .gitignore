@@ -1,0 +1,6 @@
+/__pycache__/
+/build/
+/.vscode/settings.json
+*.bin
+/bf.txt
+/carttest.py

@@ -1,0 +1,4 @@
+Copyright (C) 2022 Sono (https://github.com/SonoSooS)
+All Rights Reserved
+
+The source code is provided only for educational and security-monitoring purposes.

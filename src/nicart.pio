@@ -1,0 +1,104 @@
+/*
+    nicart.pio - Nitro Emulated Gamecart Octo-SPI protocoll machine
+    Copyright (C) 2022 Sono (https://github.com/SonoSooS)
+    All Rights Reserved
+*/
+
+
+; PIOASM stddef
+.define POL_LOW 0
+.define POL_HIGH 1
+.define POL_IRQ_WAIT 0
+.define POL_IRQ_ACK 1
+
+
+; Startup program for preprogramming
+.program NINO
+.origin 0
+nino_spein:
+    JMP nino_spein
+
+
+
+; Octo-SPI protocoll mux
+; Need:
+; - JMP_PIN = 11 (/CS)
+; - MOV X, #0 -- default bus value if FIFO starve
+; - MOV OSR, NULL
+; - OUT PINDIRS #12
+; - OUT PINS #12
+.program NICHAN
+
+PUBLIC NICHAN_ENTRY:
+again:
+    SET Y, (8 - 1) ; Should be adjusted for CTRCARD soon, although CTRCARD has different latching requirements
+    
+clockloop:
+    WAIT POL_IRQ_ACK IRQ 4 ; Wait for /CS and/or /CLK
+    
+    IN PINS, 8
+    PUSH IFFULL NOBLOCK
+    
+    JMP PIN, cleanup   ; Impossible to trigger, but happens sometimes
+    JMP Y--, clockloop ; Clock in all eight comand bytes
+    
+    
+    MOV OSR, ~NULL ; Set DAT pins as output
+    OUT PINDIRS, 8 ; https://forums.raspberrypi.com/viewtopic.php?p=1816575#p1816575
+    
+_lowpin:
+    PUSH NOBLOCK ; Used to be debug, but now used for CMD begin detection
+    
+newbit:
+.wrap_target
+    WAIT POL_IRQ_ACK IRQ 4 ; Wait for ^CS or /CLK
+    JMP PIN, cleanup       ; Clean up if ^CS
+    
+    PULL NOBLOCK/*IFEMPTY*/; Even though there are no known commands which are !!(length & 3), this is still here due to weird hardware bugs
+    OUT PINS, 8            ; Keep writing bits (or X on FIFO empty) until ^CS
+    ;JMP newbit
+.wrap
+    
+cleanup:
+    MOV OSR, NULL
+    OUT PINDIRS, 12 ; Reset pins to input
+    
+    PUSH NOBLOCK ; Used to be debug, but now necessarily used as necessary command end flag
+    
+    JMP again
+
+
+
+; Octo-SPI latch and clock control
+; Needs:
+; - JMP_PIN = 11 (/CS)
+; - MOV X, #0b01 (/CS low, /CLK high)
+; - MOV OSR, NULL
+; - OUT PINDIRS #12
+; - OUT PINS #12
+.program NINACLOCK
+
+PUBLIC NINACLOCK_ENTRY:
+pinwatcher:
+    WAIT POL_LOW GPIO 11
+    WAIT POL_LOW GPIO 10
+    
+pinwatcher_nocs:
+    ;WAIT POL_HIGH GPIO 10
+    
+pinagain:
+.wrap_target
+    MOV ISR, NULL
+    IN PINS, 2
+    MOV Y, ISR
+    JMP X!=Y, pinokay
+    ;JMP pinagain
+.wrap
+    
+pinokay:
+    IRQ WAIT 4
+    WAIT POL_HIGH GPIO 10
+    
+    JMP PIN, pinwatcher
+    JMP pinwatcher_nocs
+    

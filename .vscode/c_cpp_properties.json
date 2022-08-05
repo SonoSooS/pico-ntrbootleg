@@ -1,0 +1,22 @@
+{
+    "configurations":
+    [
+        {
+            "name": "Pi Pico",
+            "includePath":
+            [
+                "${workspaceFolder}/src/",
+                "${workspaceFolder}/src/*",
+                "C:/Programs/PicoSDK/**"
+            ],
+            "defines":
+            [
+                
+            ],
+            "compilerPath": "C:/Programs/ARM_GCC/bin/arm-none-eabi-gcc.exe",
+            "intelliSenseMode": "gcc-arm",
+            "configurationProvider" : "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
