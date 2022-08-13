@@ -508,8 +508,10 @@ void main(void)
     
     if(gpio_get(0))
     {
-        stdio_usb_init();
-        sleep_ms(1000);
+        //stdio_usb_init();
+        //sleep_ms(1000);
+        
+        stdio_uart_init();
         
         puts("Hello from USB!");
     }
