@@ -26,8 +26,8 @@
 #define NPIN_MAX (2+12)
 
 #define NLOC __scratch_x("neg")
-#define NFUNC(f) __not_in_flash_func(f)
-#define DMALOC MEMELOC_BANK3_D("neg_d")
+#define NFUNC(f) MEMELOC_RAM_F(f)
+#define DMALOC MEMELOC_BANK3_N("neg_d")
 
 
 static PIO NLOC pio;
@@ -220,7 +220,7 @@ static void negDMAPostinit(void)
         ;
 }
 
-void __no_inline_not_in_flash_func(negDMAFillReset)(void)
+void __noinline NFUNC(negDMAFillReset)(void)
 {
     zerodma->write_addr = (uint32_t)negGetPtrWrite();
     zerodma->al1_ctrl = 0
@@ -234,7 +234,7 @@ void __no_inline_not_in_flash_func(negDMAFillReset)(void)
         ;
 }
 
-void __no_inline_not_in_flash_func(negDMAFillFIFO)(uint32_t amount)
+void __noinline NFUNC(negDMAFillFIFO)(uint32_t amount)
 {
     zerodma->read_addr = (uint32_t)&dmazero[0];
     zerodma->al1_transfer_count_trig = amount;

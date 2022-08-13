@@ -144,10 +144,23 @@ SECTIONS
         /* All data end */
         __data_end__ = .;
     } > RAM
+    
+    .memedata : {
+        __memedata_start__ = .;
+        *(.memedata*)
+        . = ALIGN(4);
+        __memedata_end__ = .;
+    } > RAM
+    __memedata_source__ = LOADADDR(.memedata);
 
     .uninitialized_data (COPY): {
         . = ALIGN(4);
         *(.uninitialized_data*)
+    } > RAM
+    
+    .memenodata (NOLOAD): {
+        . = ALIGN(4);
+        *(.memenodata*)
     } > RAM
     
     .memebank2 : {
@@ -158,6 +171,11 @@ SECTIONS
     } > BANK2
     __memebank2_source__ = LOADADDR(.memebank2);
     
+    .memenbank2 (NOLOAD): {
+        . = ALIGN(4);
+        *(.memenbank2*)
+    } > BANK2
+    
     .memebank3 : {
         __memebank3_start__ = .;
         *(.memebank3*)
@@ -165,6 +183,11 @@ SECTIONS
         __memebank3_end__ = .;
     } > BANK3
     __memebank3_source__ = LOADADDR(.memebank3);
+    
+    .memenbank3 (NOLOAD): {
+        . = ALIGN(4);
+        *(.memenbank3*)
+    } > BANK3
 
     /* Start and end symbols must be word-aligned */
     .scratch_x : {
@@ -183,7 +206,7 @@ SECTIONS
     } > SCRATCH_Y
     __scratch_y_source__ = LOADADDR(.scratch_y);
 
-    .bss  : {
+    .bss (NOLOAD) : {
         . = ALIGN(4);
         __bss_start__ = .;
         *(SORT_BY_ALIGNMENT(SORT_BY_NAME(.bss*)))

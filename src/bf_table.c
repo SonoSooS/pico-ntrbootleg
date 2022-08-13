@@ -8,7 +8,9 @@
 #include <stdint.h>
 #include "pico/platform.h"
 
-#define BFLOC __not_in_flash("bf")
+#include "memeloc.h"
+
+#define BFLOC MEMELOC_RAM_D("bf")
 
 //const uint32_t BFLOC blowfish_S[0x100 * 4] __attribute__((aligned(0x1000))) =
 const uint32_t BFLOC blowfish_table[(0x100 * 4) + 18] __attribute__((aligned(0x1000))) =

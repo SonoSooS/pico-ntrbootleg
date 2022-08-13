@@ -18,6 +18,9 @@ extern int __memebank2_source__;
 extern int __memebank3_start__;
 extern int __memebank3_end__;
 extern int __memebank3_source__;
+extern int __memedata_start__;
+extern int __memedata_end__;
+extern int __memedata_source__;
 
 static __attribute__((noinline)) void data_cpy(int dummy, int* src, int* dst, int* end)
 {
@@ -63,6 +66,8 @@ void coreboot(void(*pfn)(void))
     
     data_cpy(0, &__memebank2_source__, &__memebank2_start__, &__memebank2_end__);
     data_cpy(0, &__memebank3_source__, &__memebank3_start__, &__memebank3_end__);
+    
+    data_cpy(0, &__memedata_source__, &__memedata_start__, &__memedata_end__);
 #else
     #ifdef COREBOOT_DBG
     puts("+ no cpy (NO FLASH)");

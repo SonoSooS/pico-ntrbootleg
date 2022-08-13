@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include "pico/platform.h"
 
+#include "memeloc.h"
+
 //extern const uint32_t blowfish_S[0x100 * 4];
 //extern const uint32_t blowfish_P[18];
 extern const uint32_t blowfish_table[(0x100 * 4) + 18];
@@ -11,7 +13,7 @@ extern const uint32_t blowfish_table[(0x100 * 4) + 18];
 #define F F_CPU
 //#define F F_INTERP
 
-static inline uint32_t __not_in_flash_func(F_CPU)(uint32_t indata)
+static inline uint32_t MEMELOC_RAM_F(F_CPU)(uint32_t indata)
 {
     //register const uint32_t* dptr = blowfish_S;
     register const uint32_t* dptr = blowfish_table;
@@ -55,7 +57,7 @@ static inline uint32_t __not_in_flash_func(F_CPU)(uint32_t indata)
     return res;
 }
 
-void __not_in_flash_func(bfEncrypt)(uint32_t* __restrict ptr0, uint32_t* __restrict ptr1)
+void MEMELOC_RAM_F(bfEncrypt)(uint32_t* __restrict ptr0, uint32_t* __restrict ptr1)
 {
     register uint32_t x1 = *ptr0;
     register uint32_t x2 = *ptr1;
@@ -77,7 +79,7 @@ void __not_in_flash_func(bfEncrypt)(uint32_t* __restrict ptr0, uint32_t* __restr
     *ptr1 = x1 ^ dptr[0];
 }
 
-void __not_in_flash_func(bfDecrypt)(uint32_t* __restrict ptr0, uint32_t* __restrict ptr1)
+void MEMELOC_RAM_F(bfDecrypt)(uint32_t* __restrict ptr0, uint32_t* __restrict ptr1)
 {
     register uint32_t x1 = *ptr0;
     register uint32_t x2 = *ptr1;

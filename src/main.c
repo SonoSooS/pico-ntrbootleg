@@ -24,9 +24,12 @@
 #include "bf.h"
 #include "png.h"
 
-#define ENSURE_MODE(f) __not_in_flash_func(f)
+#define ENSURE_MODE(f) MEMELOC_RAM_F(f)
+//#define ENSURE_MODE(f) __noinline MEMELOC_RAM_F(f)
+//#define ENSURE_MODE(f) __not_in_flash_func(f)
 //#define ENSURE_MODE(f) __no_inline_not_in_flash_func(f)
-#define ENSURE_MODE_NOINLINE(f) __no_inline_not_in_flash_func(f)
+#define ENSURE_MODE_NOINLINE(f) __noinline MEMELOC_RAM_F(f)
+//#define ENSURE_MODE_NOINLINE(f) __no_inline_not_in_flash_func(f)
 
 
 static uint32_t readhead;
@@ -133,7 +136,7 @@ void MEMELOC_BANK2_F(main1_fifo_push)(uint32_t data)
 }
 */
 
-void __not_in_flash_func(negDoHighperf)(void)
+void MEMELOC_RAM_F(negDoHighperf)(void)
 {
     uint32_t irq = save_and_disable_interrupts();
     
@@ -229,9 +232,9 @@ void __not_in_flash_func(negDoHighperf)(void)
 }
 
 
-static uint8_t /*MEMELOC_BANK3_D("main")*/ firmbuf[0x1000];
+static uint8_t MEMELOC_RAM_N("main") firmbuf[0x1000];
 
-uint32_t __not_in_flash_func(negDoKeyCmd)(uint32_t cmd_hi, uint32_t cmd_lo, uint32_t bad)
+uint32_t MEMELOC_RAM_F(negDoKeyCmd)(uint32_t cmd_hi, uint32_t cmd_lo, uint32_t bad)
 {
     uint32_t irq = save_and_disable_interrupts();
     
@@ -370,7 +373,7 @@ fastend:
     return bad;
 }
 
-void __not_in_flash_func(sMainLoop)(void)
+void MEMELOC_RAM_F(sMainLoop)(void)
 {
     bool had_KEY2 = false;
     
@@ -528,8 +531,7 @@ void main(void)
     firmbuf[0xE03] = (uint8_t)'M';
     memcpy(firmbuf + 0xE00, nfirmdata, 0x200);
     
-    //multicore_launch_core1(main1);
-    coreboot(main1);
+    coreboot(main1); // Setup rest of the environment, and launch Core1
     //puts("- push");
     
     //bfTests();

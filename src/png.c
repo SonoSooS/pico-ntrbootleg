@@ -14,7 +14,7 @@
 
 #define PNGLOC __scratch_y("png")
 //#define PNGLOC __not_in_flash("png")
-#define PNGNLOC MEMELOC_BANK2_D("png_shared")
+#define PNGNLOC MEMELOC_BANK2_N("png_shared")
 //#define PNGNLOC __not_in_flash("png_main")
 
 #define PNGFUNC(f) MEMELOC_BANK2_F(f)
