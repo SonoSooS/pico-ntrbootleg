@@ -40,14 +40,22 @@ target_link_libraries(negcart
 
 #target_compile_definitions(hardware_timer INTERFACE PICO_TIME_DEFAULT_ALARM_POOL_DISABLED=1)
 
+pico_set_double_implementation(negcart none)
+pico_set_float_implementation(negcart none)
+
 add_compile_definitions(PICO_STDIO_USB_CONNECT_WAIT_TIMEOUT_MS=5000)
 add_compile_definitions(PICO_STDIO_USB_ENABLE_RESET_VIA_VENDOR_INTERFACE=0)
 add_compile_definitions(PICO_DEFAULT_UART_TX_PIN=0)
 add_compile_definitions(PICO_DEFAULT_UART_RX_PIN=1)
 add_compile_definitions(PICO_DEFAULT_UART_BAUD_RATE=115200)
+add_compile_definitions(PICO_PRINTF_ALWAYS_INCLUDED=1)
+add_compile_definitions(PICO_PRINTF_SUPPORT_LONG_LONG=0)
+add_compile_definitions(PICO_PRINTF_SUPPORT_FLOAT=0)
+add_compile_definitions(PICO_PRINTF_SUPPORT_EXPONENTIAL=0)
+add_compile_definitions(PICO_FLOAT_PROPAGATE_NANS=0)
 add_compile_definitions(PICO_NO_FPGA_CHECK=1)
-#add_compile_definitions(PICO_FLOAT_SUPPORT_ROM_V1=0)
-#add_compile_definitions(PICO_DOUBLE_SUPPORT_ROM_V1=0)
+add_compile_definitions(PICO_FLOAT_SUPPORT_ROM_V1=0)
+add_compile_definitions(PICO_DOUBLE_SUPPORT_ROM_V1=0)
 #add_compile_definitions(PICO_RP2040_B1_SUPPORTED=0)
 #add_compile_definitions(PICO_RP2040_B2_SUPPORTED=0)
 
